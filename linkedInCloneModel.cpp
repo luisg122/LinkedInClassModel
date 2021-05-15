@@ -8,7 +8,7 @@ using namespace std;
 class UserProfile{
 	private:
 		int userProfileId      = 0;
-		string profileName 	   = "";
+		string profileName     = "";
 		string profileImageUrl = "";
 		string profileLocation = "";		
 		vector<UserProfile> connections;
@@ -81,7 +81,9 @@ int UserProfile::getUserProfileId(){
 
 // methods for establishing connections, displaying connections and finding degrees of separation
 void UserProfile::addConnection(UserProfile &user){
+	// bi-directiontional connections
 	this->connections.push_back(user);
+	user.connections.push_back(*this);
 } 
 
 vector<UserProfile> UserProfile::getAllConnections(){
@@ -98,7 +100,6 @@ bool UserProfile::dfs(unordered_set<int> &visited, UserProfile &user, int target
 	if(visited.find(user.getUserProfileId()) != visited.end()) return false;
 	visited.insert(user.getUserProfileId());
 	
-	int val = 0;
 	for(UserProfile &connection : user.getAllConnections())
 		if(dfs(visited, connection, targetUserId, degrees + 1, degreesOfSeparation) == true) return true;
 	
