@@ -8,7 +8,7 @@ using namespace std;
 class UserProfile{
 	private:
 		int userProfileId      = 0;
-		string profileName     = "";
+		string profileName 	   = "";
 		string profileImageUrl = "";
 		string profileLocation = "";		
 		vector<UserProfile> connections;
@@ -100,6 +100,7 @@ bool UserProfile::dfs(unordered_set<int> &visited, UserProfile &user, int target
 	if(visited.find(user.getUserProfileId()) != visited.end()) return false;
 	visited.insert(user.getUserProfileId());
 	
+	int val = 0;
 	for(UserProfile &connection : user.getAllConnections())
 		if(dfs(visited, connection, targetUserId, degrees + 1, degreesOfSeparation) == true) return true;
 	
@@ -140,15 +141,15 @@ int main(){
 	jake.addConnection(dave);
 	jake.addConnection(jon);
 	
-	cout << "Alex's Connections : " << endl;
+	cout << alex.getProfileName() << "'s Connections : " << endl;
 	for(UserProfile &user : alex.getAllConnections()) cout << user.getProfileName() << endl;
 	
-	cout << "\nJake's Connections : " << endl;
+	cout << endl << jake.getProfileName() << "'s Connections : " << endl;
 	for(UserProfile &user : jake.getAllConnections()) cout << user.getProfileName() << endl;
 	
 	
 	int degrees = alex.getDegreesOfSeparation(jake);
-	cout << "The degrees of separation between " << 
+	cout << endl << "The degrees of separation between " << 
 		alex.getProfileName() << " and " << jake.getProfileName() << " is: " << degrees << endl;
 	
 	
