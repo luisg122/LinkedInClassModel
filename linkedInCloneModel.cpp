@@ -11,7 +11,7 @@ class UserProfile{
 		string profileName     = "";
 		string profileImageUrl = "";
 		string profileLocation = "";		
-		vector<UserProfile> connections;
+		vector<UserProfile *> connections;
 		
 		// method for finding the degrees of separation between two users, will use DFS for searching 
 		bool dfs(unordered_set<int> &visited, UserProfile &user, int targetUserId, int degrees, int &degreesOfSeparation);
@@ -40,7 +40,7 @@ class UserProfile{
 		// methods for establishing connections, displaying connections and finding degrees of separation
 		void addConnection(UserProfile &user);
 		int  getDegreesOfSeparation(UserProfile &user);
-		vector<UserProfile> getAllConnections();						
+		vector<UserProfile *> getAllConnections();						
 };
 
 UserProfile::UserProfile(string profileName, string profileImageUrl, string profileLocation){
@@ -82,11 +82,11 @@ int UserProfile::getUserProfileId(){
 // methods for establishing connections, displaying connections and finding degrees of separation
 void UserProfile::addConnection(UserProfile &user){
 	// bi-directiontional connections
-	this->connections.push_back(user);
-	user.connections.push_back(*this);
+	this->connections.push_back(&user);
+	user.connections.push_back(this);
 } 
 
-vector<UserProfile> UserProfile::getAllConnections(){
+vector<UserProfile *> UserProfile::getAllConnections(){
 	return connections;
 }
 
@@ -100,8 +100,8 @@ bool UserProfile::dfs(unordered_set<int> &visited, UserProfile &user, int target
 	if(visited.find(user.getUserProfileId()) != visited.end()) return false;
 	visited.insert(user.getUserProfileId());
 	
-	for(UserProfile &connection : user.getAllConnections())
-		if(dfs(visited, connection, targetUserId, degrees + 1, degreesOfSeparation) == true) return true;
+	for(UserProfile *connection : user.getAllConnections())
+		if(dfs(visited, *connection, targetUserId, degrees + 1, degreesOfSeparation)) return true;
 	
 	return false;
 }
@@ -131,6 +131,8 @@ int main(){
 	
 	UserProfile jon("Jon", "https://dummy.com/jon/pic.png", "Florida");	
 	
+	UserProfile ben("Ben", "https://dummy.com/ben/pic.png", "Arizona");
+	
 	
 	alex.addConnection(jake);
 	alex.addConnection(dan);
@@ -141,16 +143,27 @@ int main(){
 	jake.addConnection(jon);
 	
 	cout << alex.getProfileName() << "'s Connections : " << endl;
-	for(UserProfile &user : alex.getAllConnections()) cout << user.getProfileName() << endl;
+	for(UserProfile *user : alex.getAllConnections()) cout << user->getProfileName() << endl;
 	
 	cout << endl << jake.getProfileName() << "'s Connections : " << endl;
-	for(UserProfile &user : jake.getAllConnections()) cout << user.getProfileName() << endl;
+	for(UserProfile *user : jake.getAllConnections()) cout << user->getProfileName() << endl;
 	
 	
+	// example of a direct connection
 	int degrees = alex.getDegreesOfSeparation(jake);
 	cout << endl << "The degrees of separation between " << 
 		alex.getProfileName() << " and " << jake.getProfileName() << " is: " << degrees << endl;
 	
+	// example of an indirect connection (mutual connections)
+	degrees = alex.getDegreesOfSeparation(dave);
+	cout << endl << "The degrees of separation between " <<
+		alex.getProfileName() << " and " << dave.getProfileName() << " is: " << degrees << endl;
 	
+	// example of non-established connection
+	degrees = alex.getDegreesOfSeparation(ben);
+	cout << endl << "The degrees of separation between " <<
+		alex.getProfileName() << " and " << ben.getProfileName() << " is: " << degrees << endl;
+
+		
 	return 0;
 }
