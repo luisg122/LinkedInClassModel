@@ -11,5 +11,5 @@ or indirectly (meaning they're connected through mutual connections) then we ret
 ## Thank you
 This was a fun project, I used C++ as the programming language for this assignment, since I've been using C++ quite a lot lately for coding interviews and interview prep.
 
-### Portrait View of Website DoomsNay
+### View of ouput
 <img src="outputPic.png" width=450><br><br>
